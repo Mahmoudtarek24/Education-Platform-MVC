@@ -1,3 +1,5 @@
+using CleanArch.Infrastructure;
+using CleanArch.Application;
 namespace EducationPlatform
 {
     public class Program
@@ -9,7 +11,11 @@ namespace EducationPlatform
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            var app = builder.Build();
+            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplication(builder.Configuration);
+
+
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
