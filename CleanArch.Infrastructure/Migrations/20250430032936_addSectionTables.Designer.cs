@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleanArch.Infrastructure.Migrations
 {
     [DbContext(typeof(EducationPlatformDbContext))]
-    [Migration("20250428182310_addCourseTable")]
-    partial class addCourseTable
+    [Migration("20250430032936_addSectionTables")]
+    partial class addSectionTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,14 +70,14 @@ namespace CleanArch.Infrastructure.Migrations
                     b.Property<bool>("IsSequentialWatch")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("LastUpdateOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<double>("Rating")
+                    b.Property<double?>("Rating")
                         .HasColumnType("float");
-
-                    b.Property<DateTime?>("UpdateOn")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("courseStatus")
                         .IsRequired()
@@ -94,6 +94,54 @@ namespace CleanArch.Infrastructure.Migrations
 
                             t.HasCheckConstraint("priceRang", "[Price]>0 ");
                         });
+                });
+
+            modelBuilder.Entity("CleanArch.Domain.Entity.Section", b =>
+                {
+                    b.Property<int>("SectionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SectionId"));
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<byte>("Order")
+                        .HasColumnType("tinyint");
+
+                    b.Property<TimeSpan>("SectionDuration")
+                        .HasColumnType("time");
+
+                    b.HasKey("SectionId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("Sections");
+                });
+
+            modelBuilder.Entity("CleanArch.Domain.Entity.Section", b =>
+                {
+                    b.HasOne("CleanArch.Domain.Entity.Course", "Course")
+                        .WithMany("Sections")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("CleanArch.Domain.Entity.Course", b =>
+                {
+                    b.Navigation("Sections");
                 });
 #pragma warning restore 612, 618
         }

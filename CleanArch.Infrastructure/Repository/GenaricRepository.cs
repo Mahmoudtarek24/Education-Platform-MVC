@@ -35,7 +35,7 @@ namespace CleanArch.Infrastructure.Repository
 		}
 
 
-		public async Task<T?> GetByIdEntity(int id)
+		public async Task<T?> GetByIdEntity(int? id)
 		{
 			return await Table.FindAsync(id);
 		}

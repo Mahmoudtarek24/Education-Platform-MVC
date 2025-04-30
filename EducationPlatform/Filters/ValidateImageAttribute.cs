@@ -24,22 +24,19 @@ namespace EducationPlatform.Filters
 			{
 
 				context.ModelState.AddModelError(formFieldName, $"{formFieldName} is required.");
-				context.Result=new BadRequestObjectResult(context.ModelState);	
 				return;	
 			}
 
 			if (file.Length > maxFileSize)
 			{
 				context.ModelState.AddModelError(formFieldName, ValidationMessages.MaxSize);
-				context.Result = new BadRequestObjectResult(context.ModelState);
 				return;
 			}
 
-			var extension = Path.GetExtension(formFieldName).ToLower();
+			var extension = Path.GetExtension(file.FileName).ToLower();
 			if (!_allowedExtensions.Contains(extension))
 			{
 				context.ModelState.AddModelError(formFieldName, $"Invalid file extension. Allowed: {string.Join(", ", _allowedExtensions)}");
-				context.Result = new BadRequestObjectResult(context.ModelState);
 				return;
 			}
 			base.OnActionExecuting(context);

@@ -21,7 +21,7 @@ namespace CleanArch.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Rating = table.Column<double>(type: "float", nullable: false),
+                    Rating = table.Column<double>(type: "float", nullable: true),
                     IsFree = table.Column<bool>(type: "bit", nullable: false),
                     IsSequentialWatch = table.Column<bool>(type: "bit", nullable: false),
                     CourseImage = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
@@ -29,7 +29,7 @@ namespace CleanArch.Infrastructure.Migrations
                     courseStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
                     CreateOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdateOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>

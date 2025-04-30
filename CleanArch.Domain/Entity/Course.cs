@@ -21,5 +21,7 @@ namespace CleanArch.Domain.Entity
 		public string CourseLevel { get; set; }	
 		public CourseStatus courseStatus { get; set; }
 		public TimeSpan Duration { get; set; }	
+
+		public ICollection<Section> Sections { get; set; }	
 	}
 }

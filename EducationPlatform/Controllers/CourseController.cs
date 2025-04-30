@@ -1,5 +1,8 @@
-﻿using CleanArch.Application.Interfaces;
+﻿using CleanArch.Application.DTO_s.CourseDto_s;
+using CleanArch.Application.Interfaces;
+using CleanArch.Domain.Entity;
 using EducationPlatform.Filters;
+using EducationPlatform.ViewModel;
 using EducationPlatform.ViewModel.CourseViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,9 +18,20 @@ namespace EducationPlatform.Controllers
 			this.courseServices = courseServices;	
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index(CoursesViewModel model)
 		{
-			return View();
+		
+
+			var result = await courseServices.GetCoursesAsync(model.Pagination.PageNumber, model.Pagination.PageSize);
+
+			var viewModel = new CoursesViewModel
+			{
+				Courses = result,
+				Pagination = model.Pagination,
+			};
+
+
+			return View(viewModel);
 		}
 		
 		[HttpGet]
@@ -26,8 +40,8 @@ namespace EducationPlatform.Controllers
 
 			CreateCourseViewModel viewModel = new CreateCourseViewModel()
 			{
-				AvailableLevels = (IEnumerable<SelectListItem>)courseServices.GetAvailableLevels(),
-			};	
+				AvailableLevels =courseServices.GetAvailableLevels(),
+			};
 
 
 			return View(viewModel);
@@ -35,20 +49,39 @@ namespace EducationPlatform.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[ValidateImageAttribute("CourseImage", 2,new string[] { ".jpg", ".jpeg", ".png" })]
-		public IActionResult Create(CreateCourseViewModel model) 
+		[ValidateImageAttribute("CourseImage", 2,new [] { ".jpg", ".jpeg", ".png" })]
+		public async Task<IActionResult> Create(CreateCourseViewModel model) 
 		{
-			if(!ModelState.IsValid) 
-				return View(model);	
+			if (!ModelState.IsValid)
+			{
+				model.AvailableLevels = courseServices.GetAvailableLevels();
 
-			//convert viewModel to Dto
+				return View(model);
+			}
+
+			CreateCourseDto courseDto = new CreateCourseDto()
+			{
+				CourseName = model.CourseName,
+				Description = model.Description,
+				CourseIamge = model.CourseImage,
+				Price = model.Price,
+				Discount = model.Discount,
+				IsSequentialWatch = model.IsSequentialWatch,
+				CourseLevel = string.Join(",", model.SelectedLevel),
+			};
+
+			var result=await courseServices.CreateCourse(courseDto);
+
+			if(!result.IsSuccessed)
+				return BadRequest();
 
 
-			return Ok();
+			return RedirectToAction(nameof(Index));
 		}
 
 
 		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Delete(int id) 
 		{
 			var result=await courseServices.DeleteCourseAsync(id);	
@@ -60,6 +93,7 @@ namespace EducationPlatform.Controllers
 		}
 
 		[HttpPost]
+		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> ChangeCourseAccess(int id)
 		{
 			var result = await courseServices.ChangeAccess(id);
@@ -69,5 +103,45 @@ namespace EducationPlatform.Controllers
 
 			return Ok();
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> UpdateCourseStatus(int Id)
+		{
+			var result =  courseServices.GetCourseStatusAsync(Id);
+
+			if (!result.IsSuccessed)
+			{
+				return NotFound();	
+			}
+			var courseStates =  courseServices.GetCourseStatusAsync();
+
+			var viewmode = new UpdateCourseStatusViewModel()
+			{
+				Status = result.Status,
+				CourseStates = courseStates,
+				CourseId = Id
+			};
+		
+			return PartialView("UpdateCourseStatus",viewmode);
+		}
+
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> UpdateCourseStatus(UpdateCourseStatusViewModel model)
+		{
+			if(!ModelState.IsValid)	
+				return BadRequest();
+
+
+			var result = await courseServices.UpdateCourseStatusAsync(model.CourseId, model.Status);
+
+			if(!result)
+				return BadRequest();
+
+			return RedirectToAction(nameof(Index));
+		}
+
+
 	}
 }

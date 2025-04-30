@@ -17,7 +17,7 @@ namespace EducationPlatform.ViewModel.CourseViewModel
 		public decimal Price { get; set; }
 
 		[Required(ErrorMessage = ValidationMessages.RequiredFiled)]
-		[Range(1,100,ErrorMessage =ValidationMessages.RangValue)]
+		[Range(0,100,ErrorMessage =ValidationMessages.RangValue)]
 		public decimal Discount { get; set; }
 		 
 		public bool IsSequentialWatch { get; set; }
@@ -28,7 +28,7 @@ namespace EducationPlatform.ViewModel.CourseViewModel
 
 		public List<string> SelectedLevel { get; set; }	= new List<string>();	
 
-		public IEnumerable<SelectListItem> AvailableLevels { get; set; }	
+		public IEnumerable<SelectListItem>? AvailableLevels { get; set; }	
 
 	}
 }

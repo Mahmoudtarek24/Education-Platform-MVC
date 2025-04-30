@@ -1,0 +1,151 @@
+﻿@model CoursesViewModel
+
+@{
+	ViewData["Title"] = "Courses";
+}
+
+<div class="container mt-5">
+	<div class="card shadow-sm rounded-4 p-3">
+		<!-- Header with Title and Action Button -->
+		<div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+			<h4 class="mb-0 fw-bold">Courses</h4>
+			<a asp-action="Create" class="btn btn-primary">+ Add Course</a>
+		</div>
+
+		@if (!Model.Courses.Any())
+		{
+			<p class="text-muted">No courses available.</p>
+		}
+		else
+		{
+			<div class="table-responsive">
+				<table class="table align-middle">
+					<thead class="text-muted border-bottom">
+						<tr>
+							<th style="width: 180px;">Image</th>
+							<th class="ps-4">Course Name</th>
+							<th class="ps-4">Created On</th>
+							<th class="ps-4">Status</th>
+							<th class="ps-4">Is Delete</th>
+							<th class="ps-4">Course Access</th>
+							<th class="ps-4">Price</th>
+							<th class="text-end">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var course in Model.Courses)
+						{
+							<tr style="height: 120px;">
+								<!-- Image -->
+								<td class="align-middle">
+									<img src="@course.CourseImage"
+										 alt="Course Image"
+										 class="rounded shadow-sm bg-white p-1"
+										 style="width: 180px; height: 100px; object-fit: contain;" />
+								</td>
+
+								<td class="align-middle ps-4">
+									<strong>@course.CourseName</strong>
+								</td>
+								<td class="align-middle ps-4">
+									@course.CreateOn.ToString("yyyy-MM-dd")
+								</td>
+								<td class="align-middle ps-4">
+									<strong>@course.courseStatus</strong>
+								</td>
+								<td class="align-middle ps-4">
+									<span class="badge badge-@(course.IsDeleted?"danger":"success") js-toggle">
+										@(course.IsDeleted ? "Deleted" : "Available")
+									</span>
+								</td>
+								<td class="align-middle ps-4">
+									<span class="badge badge-@(course.IsFree ? "success" : "danger") js-toggle-access">
+										@(course.IsFree ? "Free" : "Paid")
+									</span>
+								</td>
+								<td class="align-middle ps-4">
+									$@course.Price.ToString("F2")
+								</td>
+								<td>
+									<div class="dropdown text-end">
+										<button class="btn btn-active-light-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="true">
+											<i class="bi bi-menu-down"></i>
+										</button>
+										<ul class="dropdown-menu">
+											<li><a href="javascript:;" class="dropdown-item modal-render" data-title="Change Course Status" data-url="/Course/UpdateCourseStatus/@course.CourseId">Course Status</a></li>
+											<li> <a href="javascript:;" data-url="/Course/Delete/@course.CourseId" class="dropdown-item  js-toggle-status">Toggle Status </a> </li>
+											<li> <a href="javascript:;" data-url="/Course/ChangeCourseAccess/@course.CourseId" class="dropdown-item  js-change-access">Course Access  </a> </li>
+										</ul>
+									</div>
+
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</div>
+	<partial name="_Modal" />
+
+</div>
+
+@Html.AntiForgeryToken()
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$('body').delegate('.js-toggle-status', 'click', function () {
+				var btn = $(this);
+				$.post({
+					url: btn.data('url'),
+					data: {
+						'__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+					},
+					success: function () {
+						var status = btn.parents('tr').find('.js-toggle');
+						var newstatus = status.text() === 'Deleted' ? 'Available' : 'Deleted'
+						status.text(newstatus).toggleClass('badge badge-danger badge badge-success')
+					}
+				})
+			});
+
+			$('body').on('click', '.js-change-access', function () {
+				var btn = $(this);
+				$.post({
+					url: btn.data('url'),
+					data: {
+						'__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+					},
+					success: function () {
+						var status = btn.closest('tr').find('.js-toggle-access');
+						var currentText = status.text().trim();
+						var newText = currentText === 'Free' ? 'Paid' : 'Free';
+
+						status.text(newText)
+							.removeClass('badge-success badge-danger')
+							.addClass(newText === 'Free' ? 'badge-success' : 'badge-danger');
+					},
+					error: function () {
+						alert("Error while changing course access.");
+					}
+				});
+			});
+			
+			$('body').delegate('.modal-render', 'click', function () {
+			var btn = $(this);
+			var modal = $('#Modal');
+			modal.modal('show');
+			modal.find('.modal-title').text(btn.data('title'));
+
+			$.get({
+				url: btn.data('url'),
+				success: function (form) {
+					modal.find('.modal-body').html(form);
+					$.validator.unobtrusive.parse(modal);
+				}
+
+			})
+		})
+		});
+	</script>
+}

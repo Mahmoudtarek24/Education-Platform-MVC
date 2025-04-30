@@ -22,6 +22,7 @@ namespace CleanArch.Infrastructure.Context
 		}
 
 		public DbSet<Course> Course { get; set; }	
+		public DbSet<Section> Sections { get; set; }
 
 	}
 }

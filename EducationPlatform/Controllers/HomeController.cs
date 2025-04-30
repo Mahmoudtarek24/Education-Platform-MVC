@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using EducationPlatform.Models;
+using EducationPlatform.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EducationPlatform.Controllers

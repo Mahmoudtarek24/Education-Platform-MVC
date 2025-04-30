@@ -9,7 +9,7 @@ namespace CleanArch.Domain.Interfaces
 	public interface IGenaricRepository<T> where T : class
 	{
 		Task<IEnumerable<T>> GetAllEntities();
-		Task<T?> GetByIdEntity(int id);
+		Task<T?> GetByIdEntity(int? id);
 		Task AddAsync(T entity);
 		void Update(T entity);
 		void Delete(T entity);

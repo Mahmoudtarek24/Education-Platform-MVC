@@ -1,0 +1,85 @@
+﻿@model CreateCourseViewModel
+
+@{
+    ViewData["Title"] = "Create New Course";
+}
+
+<h2>Create New Course</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="card p-4 shadow-sm rounded">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label asp-for="CourseName" class="form-label">Course Name:</label>
+                <input asp-for="CourseName" class="form-control"  autocomplete="off"/>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Price" class="form-label">Price ($):</label>
+                <input asp-for="Price" class="form-control" autocomplete="off" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Discount" class="form-label">Discount (%)</label>
+            <input asp-for="Discount" class="form-control" autocomplete="off" />
+        </div>
+
+        <div class="mb-3 form-check">
+            <input asp-for="IsSequentialWatch" class="form-check-input" />
+            <label asp-for="IsSequentialWatch" class="form-check-label">Is Sequential Watch</label>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label d-block">Available Levels:</label>
+            @foreach (var level in Model?.AvailableLevels)
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="SelectedLevel"
+                           value="@level.Value"
+                    @(Model.SelectedLevel.Contains(level.Value) ? "checked" : "") />
+                    <label class="form-check-label" for="@level.Value">@level.Text</label>
+                </div>
+            }
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CourseImage" class="form-label">Course Image</label>
+            <input asp-for="CourseImage" type="file" class="form-control" id="imageInput" />
+            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; margin-top:10px; max-height:200px;" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Course</button>
+    </div>
+</form>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.getElementById("imageInput");
+            const preview = document.getElementById("imagePreview");
+
+            input.addEventListener("change", function () {
+                const file = input.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+
+}

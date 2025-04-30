@@ -14,7 +14,6 @@ namespace CleanArch.Application.DTO_s.CourseDto_s
 		public string Description { get; set; }
 		public decimal Price { get; set; }
 		public decimal Discount { get; set; }
-		public bool IsFree { get; set; }
 		public bool IsSequentialWatch { get; set; }
 		public string CourseLevel { get; set; }
 

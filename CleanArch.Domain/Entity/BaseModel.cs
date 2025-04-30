@@ -9,7 +9,7 @@ namespace CleanArch.Domain.Entity
 	public class BaseModel
 	{
 		public DateTime CreateOn { get; set; }	
-		public DateTime? UpdateOn { get; set; }	
+		public DateTime? LastUpdateOn { get; set; }	
 		public bool IsDeleted { get; set; }	
 	}
 }
