@@ -13,6 +13,7 @@ namespace CleanArch.Application.Interfaces
 
 		Task<bool> UpdateSectionAsync(SectionDto UpdareSectionDto);
 
-		Task<SectionDto> IsDeletedSection(int Id);
+		Task<bool> DeleteSectionAsync(int Id);
+		SectionDto IsDeletedSection(int Id);
 	}
 }

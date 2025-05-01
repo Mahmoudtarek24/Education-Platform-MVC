@@ -15,6 +15,7 @@ namespace CleanArch.Application
 		public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddScoped<ICourseServices,CourseServices>();
+			services.AddScoped<ISectionServices,SectionServices>();
 			services.AddScoped<IImageServices, ImageServices>();
 			
 			return services;

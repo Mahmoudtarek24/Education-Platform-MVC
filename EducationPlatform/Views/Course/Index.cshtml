@@ -66,7 +66,7 @@
 								<td class="align-middle ps-4">
 									$@course.Price.ToString("F2")
 								</td>
-								<td>
+								<td class="align-middle ps-4">
 									<div class="dropdown text-end">
 										<button class="btn btn-active-light-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="true">
 											<i class="bi bi-menu-down"></i>
@@ -75,6 +75,7 @@
 											<li><a href="javascript:;" class="dropdown-item modal-render" data-title="Change Course Status" data-url="/Course/UpdateCourseStatus/@course.CourseId">Course Status</a></li>
 											<li> <a href="javascript:;" data-url="/Course/Delete/@course.CourseId" class="dropdown-item  js-toggle-status">Toggle Status </a> </li>
 											<li> <a href="javascript:;" data-url="/Course/ChangeCourseAccess/@course.CourseId" class="dropdown-item  js-change-access">Course Access  </a> </li>
+											<li> <a asp-action="Details" asp-controller="Course" asp-route-Id="@course.CourseId" class="dropdown-item">Course Details </a> </li>
 										</ul>
 									</div>
 
@@ -87,11 +88,12 @@
 		}
 	</div>
 	<partial name="_Modal" />
-
 </div>
 
 @Html.AntiForgeryToken()
 @section Scripts {
+
+	<partial name="_ValidationScriptsPartial" />
 	<script>
 		$(document).ready(function () {
 			$('body').delegate('.js-toggle-status', 'click', function () {

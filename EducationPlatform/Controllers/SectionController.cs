@@ -1,5 +1,7 @@
 ﻿using CleanArch.Application.DTO_s.SectionDto_s;
 using CleanArch.Application.Interfaces;
+using CleanArch.Domain.Entity;
+using EducationPlatform.Filters;
 using EducationPlatform.ViewModel.SectionViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -10,9 +12,10 @@ namespace EducationPlatform.Controllers
 	{
 		private readonly ISectionServices sectionServices;
 		private readonly ICourseServices courseServices;	
-		public SectionController(ISectionServices sectionServices)
+		public SectionController(ISectionServices sectionServices, ICourseServices courseServices)
 		{
 			this.sectionServices = sectionServices;
+			this.courseServices = courseServices;	
 		}
 
 		public IActionResult Index()
@@ -21,7 +24,7 @@ namespace EducationPlatform.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Create(int CourseId ,string CourseName) 
+		public async Task<IActionResult> Create(int CourseId) 
 		{ 
 		 var result= await courseServices.IsDeletedCourse(CourseId);
 
@@ -30,16 +33,16 @@ namespace EducationPlatform.Controllers
 
 			SectionViewModel  viewModel = new SectionViewModel() { 
 			CourseId = CourseId,
-			CourseName = CourseName	
 			};	
-			return View(viewModel);
+			return PartialView("SectionForm", viewModel);
 		}	
 		[HttpPost]
+		//[AjaxOnly]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create(SectionViewModel model)
 		{
 			if(!ModelState.IsValid)	
-				return View(model);
+				return BadRequest();	
 
 
 			SectionDto dto = new SectionDto()
@@ -54,7 +57,7 @@ namespace EducationPlatform.Controllers
 			if (!result)	
 				return BadRequest();
 
-			return Ok();
+			return RedirectToAction("Details", "Course", new { Id =model.CourseId });
 		}
 
 		[HttpGet]
@@ -65,7 +68,7 @@ namespace EducationPlatform.Controllers
 			if (!Courseresult)
 				return NotFound();
 
-			var Section = await sectionServices.IsDeletedSection(CourseId);
+			var Section = sectionServices.IsDeletedSection(SectionId);
 
 			if (Section is null)
 				return NotFound();
@@ -78,14 +81,14 @@ namespace EducationPlatform.Controllers
 				Order= Section.Order,
 				SectionId = SectionId
 			};
-			return View(viewModel);
+			return PartialView("SectionForm", viewModel);
 		}
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Update(SectionViewModel model)
 		{
 			if (!ModelState.IsValid)	
-				return View();
+				return BadRequest();
 
 
 			SectionDto dto = new SectionDto()
@@ -101,10 +104,25 @@ namespace EducationPlatform.Controllers
 			if (!result) 
 				return BadRequest();
 
-
-			return Ok();
+			return RedirectToAction("Details", "Course", new { Id = model.CourseId });
 		}
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Delete(int SectionId)
+		{
+			var Section =  sectionServices.IsDeletedSection(SectionId);
 
+			if (Section is null)
+				return NotFound();
+
+
+			var result=await sectionServices.DeleteSectionAsync(SectionId);
+
+			if(!result)	
+				return BadRequest();	
+
+			return Ok();	
+		}	
 	}
 }

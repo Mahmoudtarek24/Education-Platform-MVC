@@ -4,6 +4,7 @@ using CleanArch.Domain.Entity;
 using EducationPlatform.Filters;
 using EducationPlatform.ViewModel;
 using EducationPlatform.ViewModel.CourseViewModel;
+using EducationPlatform.ViewModel.SectionViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -105,7 +106,7 @@ namespace EducationPlatform.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> UpdateCourseStatus(int Id)
+		public IActionResult UpdateCourseStatus(int Id)
 		{
 			var result =  courseServices.GetCourseStatusAsync(Id);
 
@@ -113,7 +114,7 @@ namespace EducationPlatform.Controllers
 			{
 				return NotFound();	
 			}
-			var courseStates =  courseServices.GetCourseStatusAsync();
+			var courseStates = courseServices.GetCourseStatus();
 
 			var viewmode = new UpdateCourseStatusViewModel()
 			{
@@ -127,6 +128,7 @@ namespace EducationPlatform.Controllers
 
 
 		[HttpPost]
+		//[AjaxOnly]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> UpdateCourseStatus(UpdateCourseStatusViewModel model)
 		{
@@ -141,6 +143,48 @@ namespace EducationPlatform.Controllers
 
 			return RedirectToAction(nameof(Index));
 		}
+
+		public async Task<IActionResult> Details(int Id)
+		{
+			var result=await courseServices.GetCourseDetailsAsync(Id);
+
+			if (result is null)
+				return BadRequest();
+
+			CourseDetailsViewModel viewModel = new CourseDetailsViewModel()
+			{
+				CourseId=result.CourseId,	
+				CourseImage = result.CourseImage,	
+				IsSequentialWatch=result.IsSequentialWatch,	
+				CourseLevel = result.CourseLevel,
+				CourseName = result.CourseName,
+				CreateOn=result.CreateOn,	
+				Description=result.Description,
+				Discount=result.Discount,	
+				Duration=result.Duration,
+				IsDeleted=result.IsDeleted,
+				IsFree=result.IsFree,	
+				LastUpOn=result.LastUpOn,	
+				Price=result.Price,
+				Rating=result.Rating,
+				Status=result.Status,	
+			};	
+
+			foreach(var sectionDto in result.SectionDataResponds)
+			{
+				viewModel.sectionDataViewModels.Add(new SectionDataViewModel
+				{
+					order = sectionDto.order,
+					SectionId = sectionDto.SectionId,
+					SectionName = sectionDto.SectionName,
+					IsDeleted = sectionDto.IsDelted
+				});
+
+			}
+
+			return View(viewModel);
+		}
+
 
 
 	}

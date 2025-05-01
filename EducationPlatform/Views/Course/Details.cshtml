@@ -1,0 +1,182 @@
+﻿@model CourseDetailsViewModel
+@section Styles {
+	<link href="~/css/course-details.css" rel="stylesheet" />
+}
+<div class="container mt-5">
+    <div class="card shadow-sm rounded-4 p-4 w-100">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+            <h4 class="mb-0 fw-bold">@Model.CourseName</h4>
+            <a asp-action="Create" class="btn btn-primary">+ Add Course</a>
+        </div>
+
+        <!-- Course Info -->
+        <div class="d-flex flex-wrap align-items-start gap-4">
+            <!-- Image -->
+            <div style="min-width: 150px;" class="text-center">
+                <img src="@(string.IsNullOrEmpty(Model.CourseImage) ? "/images/no-cover.png" : Model.CourseImage)"
+                     alt="Course Image"
+                     class="rounded-2 border"
+                     style="width: 150px; height: 150px; object-fit: contain;" />
+            </div>
+
+            <!-- Details -->
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        @if (!string.IsNullOrEmpty(Model.Status))
+                        {
+                            <span class="badge bg-warning text-dark mb-2">@Model.Status</span>
+                        }
+                        <p class="text-muted mb-2">Level: @Model.CourseLevel</p>
+                    </div>
+                    <a asp-action="Edit" asp-route-id="@Model.CourseId" class="btn btn-sm btn-primary">Edit</a>
+                </div>
+
+                <!-- Meta Info Row 1 -->
+                <div class="d-flex flex-wrap gap-4 text-body meta-info">
+                    <div><strong>Price:</strong> @(Model.IsFree ? "Free" : $"{Model.Price:C}")</div>
+                    <div><strong>Discount:</strong> @Model.Discount%</div>
+                    <div><strong>Rating:</strong> @(Model.Rating?.ToString("0.0") ?? "Not Rated")</div>
+                    <div><strong>Duration:</strong> @Model.Duration.ToString(@"hh\:mm")</div>
+                </div>
+
+                <!-- Meta Info Row 2 -->
+                <div class="d-flex flex-wrap gap-4 text-body mt-2 meta-info">
+                    <div><strong>Created On:</strong> @Model.CreateOn.ToString("dd MMM, yyyy")</div>
+                    @if (Model.LastUpOn.HasValue)
+                    {
+                        <div><strong>Last Updated:</strong> @Model.LastUpOn.Value.ToString("dd MMM, yyyy")</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="mt-4">
+            <ul class="nav nav-tabs" id="courseTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#descTab" type="button" role="tab" aria-controls="descTab" aria-selected="true">
+                        Description
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#contentTab" type="button" role="tab" aria-controls="contentTab" aria-selected="false">
+                        Content
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="copies-tab" data-bs-toggle="tab" data-bs-target="#copiesTab" type="button" role="tab" aria-controls="copiesTab" aria-selected="false">
+                        Section
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content pt-3" id="courseTabsContent">
+                <div class="tab-pane fade show active" id="descTab" role="tabpanel" aria-labelledby="desc-tab">
+                    <h5>Description</h5>
+                    <p>@Html.Raw(Model.Description ?? "No description available.")</p>
+                </div>
+
+                <div class="tab-pane fade" id="contentTab" role="tabpanel" aria-labelledby="content-tab">
+                    <h5>Course Content</h5>
+                    <p>Coming soon...</p>
+                </div>
+
+                <div class="tab-pane fade" id="copiesTab" role="tabpanel" aria-labelledby="copies-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5>Section</h5>
+                        <a href="javascript:;" class="btn btn-primary modal-render" data-title="Add Section - @Model.CourseName" data-url="/Section/Create?CourseId=@Model.CourseId">Add Section</a>
+                    </div>
+                    @if (Model.sectionDataViewModels == null || !Model.sectionDataViewModels.Any())
+                    {
+                        <div class="no-copies-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            No Section available for this course yet.
+                        </div>
+                    }
+                    else
+                    {
+                        <table class="table table-row-dashed table-row-gray-300 gy-2 align-middle" style="background-color: #f8f9fa; border-collapse: separate; border-spacing: 0;">
+                            <thead>
+                                <tr class="fw-bold fs-6 text-gray-400 text-uppercase" style="color: #6c757d;">
+                                    <th>Section Name</th>
+                                    <th>Section Order</th>
+                                    <th>Status</th>
+                                    <th>Section Duration</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sectn in Model.sectionDataViewModels)
+                                {
+                                    <tr style="border-bottom: 1px dashed #dee2e6;">
+                                        <td>@sectn.SectionName</td>
+                                        <td>@sectn.order</td>
+                                        <td>
+                                            <span class="badge @(sectn.IsDeleted ? "bg-danger" : "bg-success") text-white js-toggle">
+                                                @(sectn.IsDeleted ? "Inactive" : "Active")
+                                            </span>
+                                        </td>
+                                        <td>2</td>
+                                        <td class="text-end">
+                                            <a href="javascript:;" class="btn btn-sm  modal-render  btn-primary" data-title="Edit Section - @Model.CourseName" data-url="/Section/Update?CourseId=@Model.CourseId&SectionId=@sectn.SectionId">Edit</a>
+                                            <a href="javascript:;" class="btn btn-sm js-toggle-status btn-danger" data-url="/Section/Delete?SectionId=@sectn.SectionId">Delete</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="copies-list">
+                            <!-- If you have additional content for copies-list, add it here -->
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <partial name="_Modal" />
+</div>
+@Html.AntiForgeryToken()
+
+@section Scripts {
+	<script src="~/js/course-details.js"></script>
+	<script>
+
+		$(document).ready(function () {
+
+
+               $('body').delegate('.js-toggle-status', 'click', function () {
+            var btn = $(this);
+            $.post(
+                btn.data('url'),
+                {
+                    '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                function () {
+                    // Remove the entire row from the table
+                    btn.parents('tr').remove();
+                }
+            ).fail(function () {
+                alert('Failed to delete the section. Please try again.');
+            });
+        });
+
+			$('body').delegate('.modal-render', 'click', function () {
+			var btn = $(this);
+			var modal = $('#Modal');
+			modal.modal('show');
+			modal.find('.modal-title').text(btn.data('title'));
+
+			console.log(btn.data('url'));
+			$.get({
+				url: btn.data('url'),
+				success: function (form) {
+					modal.find('.modal-body').html(form);
+					$.validator.unobtrusive.parse(modal);
+				}
+			})
+		})
+		});
+	</script>
+}

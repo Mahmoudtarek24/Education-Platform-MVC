@@ -51,5 +51,32 @@ namespace CleanArch.Infrastructure.Repository
 				             SingleOrDefaultAsync(e => e.CourseId == Id);
 		}
 
+
+		public async Task<Course?> AllCourseData(int Id)
+		{
+			return await context.Course.Include(e=>e.Sections)
+				                       .Select(e=>new Course {
+										CourseId = e.CourseId,
+									   Description = e.Description,
+									   Discount = e.Discount,
+									   CourseImage = e.CourseImage,	
+									   IsSequentialWatch=e.IsSequentialWatch,
+									   CreateOn = e.CreateOn,	
+									   IsDeleted= e.IsDeleted,	
+									   CourseName = e.CourseName,		
+									   CourseLevel = e.CourseLevel,	
+									   courseStatus = e.courseStatus,
+									   Duration = e.Duration,
+									   IsFree=e.IsFree,
+									   LastUpdateOn = e.LastUpdateOn,
+									   Price = e.Price,
+									   Rating = e.Rating,
+									   Sections = e.Sections.Where(e=>!e.IsDeleted).ToList(),
+									   })
+				                       .FirstOrDefaultAsync(e => e.CourseId == Id);
+
+		}
+
+
 	}
 }

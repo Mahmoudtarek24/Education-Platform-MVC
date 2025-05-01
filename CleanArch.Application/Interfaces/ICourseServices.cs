@@ -18,9 +18,12 @@ namespace CleanArch.Application.Interfaces
 		Task<bool> UpdateCourseStatusAsync(int Id,string status);
 		Task<bool> IsDeletedCourse(int Id);
 		UpdateCourseStatusRespond GetCourseStatusAsync(int Id);
-		
+
+		Task<CourseDataRespond> GetCourseDetailsAsync(int CourseId);
+
+
 		IEnumerable<SelectListItem> GetAvailableLevels();
-		IEnumerable<SelectListItem> GetCourseStatusAsync();	
+		IEnumerable<SelectListItem> GetCourseStatus();	
 
 	}
 }

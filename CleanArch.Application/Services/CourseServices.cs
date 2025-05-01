@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using CourseStatus = CleanArch.Application.Enums.CourseStatus;
 using CourseLevel = CleanArch.Application.Enums.CourseLevel;
 using CleanArch.Application.DTO_s.SectionDto_s;
+using CleanArch.Application.ResponseDTO_s.SectionRespondDto;
 
 namespace CleanArch.Application.Services
 {
@@ -150,7 +151,7 @@ namespace CleanArch.Application.Services
 
 		
 
-		public IEnumerable<SelectListItem> GetCourseStatusAsync()
+		public IEnumerable<SelectListItem> GetCourseStatus()
 		{
 			return Enum.GetValues(typeof(CourseStatus)).Cast<CourseStatus>()
 							 .Select(e => new SelectListItem() { 
@@ -216,6 +217,45 @@ namespace CleanArch.Application.Services
 
 
 			return true;
+		}
+
+		public async Task<CourseDataRespond> GetCourseDetailsAsync(int CourseId)
+		{
+			CourseDataRespond courseRespond = new CourseDataRespond();	
+
+			var course =await unitOfWork.courseRepository.AllCourseData(CourseId);
+
+			if (course == null)
+				return courseRespond;
+
+			courseRespond.Duration=course.Duration;
+			courseRespond.Status=course.courseStatus.ToString();
+			courseRespond.Discount=course.Discount;
+			courseRespond.IsSequentialWatch=course.IsSequentialWatch;
+			courseRespond.LastUpOn=course.LastUpdateOn;	
+			courseRespond.Price=course.Price;
+			courseRespond.IsDeleted=course.IsDeleted;	
+			courseRespond.IsFree=course.IsFree;	
+			courseRespond.Rating=course.Rating;	
+			courseRespond.CourseLevel=course.CourseLevel;	
+			courseRespond.CourseId=course.CourseId;
+			courseRespond.CourseImage = $"{CourseFolderName}{course.CourseImage}";
+			courseRespond.CreateOn=course.CreateOn;	
+			courseRespond.CourseName=course.CourseName;
+			courseRespond.Description=course.Description;
+
+			foreach(var section in course.Sections)
+			{
+				courseRespond.SectionDataResponds.Add(new SectionDataRespond
+				{
+					order = section.Order,
+					SectionName = section.Name,
+					SectionId = section.SectionId,
+					IsDelted=section.IsDeleted,
+				});
+			}
+
+			return courseRespond;
 		}
 	}
 }

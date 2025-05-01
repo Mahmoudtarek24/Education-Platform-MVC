@@ -1,0 +1,76 @@
+﻿.course-details-container {
+    background: #f9fbfd;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: sans-serif;
+}
+
+.course-header {
+    display: flex;
+    gap: 20px;
+}
+
+.course-image img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: white;
+}
+
+.status-badge {
+    background: #fdd835;
+    color: #000;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 5px;
+    margin-left: 8px;
+}
+
+.meta-info {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 1.1rem;
+}
+
+/* Styles for the Copies section */
+.no-copies-message {
+    background-color: #fff3cd;
+    border: 2px dashed #ffca2c;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    color: #856404;
+}
+
+    .no-copies-message i {
+        margin-right: 8px;
+        color: #ffca2c;
+    }
+
+.copies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.copy-item {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+    .copy-item .badge {
+        font-size: 0.9rem;
+    }
+
+/* Styles for the description/content section */
+.tab-content h5 {
+    font-size: 1.75rem;
+}
+
+.tab-content p {
+    font-size: 1.4rem;
+}

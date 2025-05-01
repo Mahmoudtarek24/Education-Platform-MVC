@@ -78,10 +78,10 @@ namespace CleanArch.Application.Services
 
 
 
-		public async Task<SectionDto> IsDeletedSection(int Id)
+		public SectionDto IsDeletedSection(int Id)
 		{
 			SectionDto UpdateSectionDto = null;
-			var section = await unitOfWork.SectionRepository.IsDeletedSection(Id);
+			var section = unitOfWork.SectionRepository.IsDeletedSection(Id);
 
 			if (section == null)
 				return UpdateSectionDto;
@@ -94,6 +94,28 @@ namespace CleanArch.Application.Services
 			};
 
 			return UpdateSectionDto;
+		}
+
+		public async Task<bool> DeleteSectionAsync(int Id)
+		{
+			var Section = await unitOfWork.SectionRepository.GetByIdEntity(Id);
+
+			if (Section == null) return false;
+
+			try
+			{
+				unitOfWork.CreateTransaction();
+				Section.IsDeleted = true;
+
+				await unitOfWork.Save();
+				unitOfWork.Commit();
+				return true;
+			}
+			catch
+			{
+				unitOfWork.RollBack();
+				return false;	
+			}
 		}
 	}
 }

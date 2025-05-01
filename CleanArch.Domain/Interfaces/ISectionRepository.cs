@@ -9,6 +9,6 @@ namespace CleanArch.Domain.Interfaces
 {
 	public interface ISectionRepository :IGenaricRepository<Section>
 	{
-		Task<Section?> IsDeletedSection(int Id);
+		Section? IsDeletedSection(int Id);
 	}
 }

@@ -12,5 +12,6 @@ namespace CleanArch.Domain.Interfaces
 		Task<List<Course?>> GetAllCourses(int PageNumber, int PageSize);
 		Course? GetCourseStatus(int Id);
 		Task<Course?> IsDeletedCourse(int Id);
+		Task<Course?> AllCourseData(int Id);
 	}
 }
