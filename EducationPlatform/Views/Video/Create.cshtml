@@ -1,0 +1,86 @@
+﻿@model CreateVideoViewModel
+
+@{
+	ViewData["Title"] = "Add Video";
+}
+
+@if (ViewBag.Message != null)
+{
+	<div class="alert alert-success">
+		@ViewBag.Message
+	</div>
+}
+
+
+<div class="container-fluid mt-5">
+	<div class="card shadow-sm rounded-4 p-5 w-100">
+		<!-- Header with Title and Action Button -->
+		<div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+			<h4 class="mb-0 fw-bold">@Model.CourseNmae - @Model.SectionName - ( Add Video )</h4>
+		</div>
+
+		<form asp-action="Create" asp-controller="Video" enctype="multipart/form-data" method="post">
+			@* Hidden SectionId *@
+			<input type="hidden" asp-for="SectionId" />
+			<input type="hidden" asp-for="CourseNmae" />
+			<input type="hidden" asp-for="SectionName" />
+
+			@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+			<div class="mb-3">
+				<label asp-for="VideoName" class="form-label"></label>
+				<input asp-for="VideoName" class="form-control" />
+				<span asp-validation-for="VideoName" class="text-danger"></span>
+			</div>
+
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<label asp-for="order" class="form-label"></label>
+					<input asp-for="order" class="form-control" />
+					<span asp-validation-for="order" class="text-danger"></span>
+				</div>
+				<div class="col-md-6 d-flex align-items-end">
+					<div class="form-check">
+						<input asp-for="IsFree" class="form-check-input" />
+						<label asp-for="IsFree" class="form-check-label"></label>
+					</div>
+				</div>
+			</div>
+			<div class="mb-3">
+				<label asp-for="Video" class="form-label"></label>
+				<input asp-for="Video" type="file" class="form-control" accept="video/*" onchange="previewVideo(event)" />
+				<span asp-validation-for="Video" class="text-danger"></span>
+			</div>
+
+			<div class="mb-3" id="video-preview-container" style="display: none;">
+				<label class="form-label">Preview:</label>
+				<video id="video-preview" controls width="100%" style="max-height: 400px;"></video>
+			</div>
+			<button type="submit" class="btn btn-primary">Save Video</button>
+			<a asp-action="Index" asp-controller="Section" asp-route-Id="@Model.SectionId"
+			   asp-route-courseName="@Model.CourseNmae" asp-route-sctionName="@Model.SectionName"
+			   class="btn btn-primary">Back To Section</a>
+		</form>
+	</div>
+</div>
+
+
+
+@section Scripts {
+	<script>
+		function previewVideo(event) {
+			const file = event.target.files[0];
+			const preview = document.getElementById('video-preview');
+			const container = document.getElementById('video-preview-container');
+
+			if (file && file.type.startsWith('video/')) {
+				const url = URL.createObjectURL(file);
+				preview.src = url;
+				container.style.display = 'block';
+			} else {
+				preview.src = '';
+				container.style.display = 'none';
+			}
+		}
+	</script>
+	@await Html.PartialAsync("_ValidationScriptsPartial")
+}

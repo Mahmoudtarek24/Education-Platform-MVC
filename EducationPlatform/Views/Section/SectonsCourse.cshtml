@@ -1,0 +1,18 @@
+﻿@model List<SectionDataViewModel>
+@{
+	var courseName = ViewBag.courseName as string;
+}
+
+
+@foreach (var sectn in Model)
+{
+	<p>
+		<a class="link-opacity-100-hover" href="/Section/Index/@sectn.SectionId?courseName=@courseName&sctionName=@sectn.SectionName">
+			@sectn.SectionName
+		</a>
+	</p>
+}
+
+
+
+

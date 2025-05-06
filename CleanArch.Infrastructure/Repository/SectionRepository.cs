@@ -24,6 +24,22 @@ namespace CleanArch.Infrastructure.Repository
 		}
 
 
+		public List<Section>? GetSectionByCourseId(int CourseId)
+		{
+
+			return  context.Sections
+									.Where(e => e.CourseId == CourseId&&!e.IsDeleted).ToList();
+		}
+
+
+	    public async Task<Section> SectionVideos(int SectionId)
+		{
+			return await context.Sections.Include(e => e.Videos).SingleOrDefaultAsync(e => e.SectionId == SectionId);
+				              	
+		}
+			 
+			 
+
 
 	}
 }

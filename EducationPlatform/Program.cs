@@ -1,5 +1,7 @@
 using CleanArch.Infrastructure;
 using CleanArch.Application;
+using EducationPlatform.Settings;
+using EducationPlatform.Middleware;
 namespace EducationPlatform
 {
     public class Program
@@ -11,11 +13,16 @@ namespace EducationPlatform
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.Configure<VideoSetting>(builder.Configuration.GetSection("VideoSettings"));
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication(builder.Configuration);
 
+            //builder.WebHost.ConfigureKestrel(serverOptions =>
+            //{
+            //    serverOptions.Limits.MaxRequestBodySize = long.MaxValue;
+            //});
 
-			var app = builder.Build();
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -27,7 +34,6 @@ namespace EducationPlatform
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthorization();

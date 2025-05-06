@@ -3,6 +3,7 @@ using CleanArch.Application.Interfaces;
 using CleanArch.Domain.Entity;
 using EducationPlatform.Filters;
 using EducationPlatform.ViewModel.SectionViewModel;
+using EducationPlatform.ViewModel.VideoViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -18,9 +19,36 @@ namespace EducationPlatform.Controllers
 			this.courseServices = courseServices;	
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index(int Id ,string courseName,string sctionName)
 		{
-			return View();
+
+			var sectionDetails = await sectionServices.SectionVideosAsync(Id);
+
+
+			SectionDetailsViewModel viewModel =new SectionDetailsViewModel()
+			{
+				SectionId = Id ,
+				CourseNmae = courseName,
+				SectionName = sctionName,
+				SectionDuration = sectionDetails.SectionDuration,	
+			};
+
+			foreach(var videoDetails in sectionDetails.VideoDetailsResponds)
+			{
+				VideoDetailsViewModel videoDetailsViewModel = new VideoDetailsViewModel()
+				{
+					VideoDuration = videoDetails.VideoDuration,
+					CreateOn = videoDetails.CreateOn,	
+					IsFree= videoDetails.IsFree,	
+					LastUpdateOn= videoDetails.LastUpdateOn,	
+					VideoId = videoDetails.VideoId,
+					VideoName = videoDetails.VideoName,
+					VideoOrder = videoDetails.VideoOrder,		
+					VideoFileUrl = videoDetails.VideoFileUrl,		
+				};
+				viewModel.videoDetailsViewModels.Add(videoDetailsViewModel);	
+			}	
+			return View(viewModel);
 		}
 
 		[HttpGet]
@@ -123,6 +151,38 @@ namespace EducationPlatform.Controllers
 				return BadRequest();	
 
 			return Ok();	
-		}	
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetCourseSections(int Id,string courseName)
+		{
+			var result =await courseServices.IsDeletedCourse(Id);
+
+			if (!result)
+				return NotFound();
+
+			var Sections = sectionServices.GetSectionByCourseId(Id);
+
+			if (Sections is null)
+				return NotFound();
+
+			List<SectionDataViewModel> viewModels = new List<SectionDataViewModel>();
+
+			foreach (var section in Sections)
+			{
+				SectionDataViewModel sectionData = new SectionDataViewModel()
+				{
+					SectionName = section.Name,
+					SectionId = section.SectionId,
+					order = section.Order,
+				};
+				viewModels.Add(sectionData);
+			}
+
+			ViewBag.courseName=courseName;	
+			return PartialView("SectonsCourse", viewModels);
+		}
+
 	}
 }
+
+

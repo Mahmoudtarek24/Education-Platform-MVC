@@ -10,5 +10,7 @@ namespace CleanArch.Domain.Interfaces
 	public interface ISectionRepository :IGenaricRepository<Section>
 	{
 		Section? IsDeletedSection(int Id);
+		List<Section>? GetSectionByCourseId(int CourseId);
+		Task<Section> SectionVideos(int SectionId);
 	}
 }

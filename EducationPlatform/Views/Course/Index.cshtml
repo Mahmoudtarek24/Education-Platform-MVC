@@ -4,8 +4,8 @@
 	ViewData["Title"] = "Courses";
 }
 
-<div class="container mt-5">
-	<div class="card shadow-sm rounded-4 p-3">
+<div class="container-fluid mt-5">
+	<div class="card shadow-sm rounded-4 p-5 w-100">
 		<!-- Header with Title and Action Button -->
 		<div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
 			<h4 class="mb-0 fw-bold">Courses</h4>
@@ -73,12 +73,12 @@
 										</button>
 										<ul class="dropdown-menu">
 											<li><a href="javascript:;" class="dropdown-item modal-render" data-title="Change Course Status" data-url="/Course/UpdateCourseStatus/@course.CourseId">Course Status</a></li>
-											<li> <a href="javascript:;" data-url="/Course/Delete/@course.CourseId" class="dropdown-item  js-toggle-status">Toggle Status </a> </li>
-											<li> <a href="javascript:;" data-url="/Course/ChangeCourseAccess/@course.CourseId" class="dropdown-item  js-change-access">Course Access  </a> </li>
-											<li> <a asp-action="Details" asp-controller="Course" asp-route-Id="@course.CourseId" class="dropdown-item">Course Details </a> </li>
+											<li><a href="javascript:;" data-url="/Course/Delete/@course.CourseId" class="dropdown-item  js-toggle-status">Toggle Status </a> </li>
+											<li><a href="javascript:;" data-url="/Course/ChangeCourseAccess/@course.CourseId" class="dropdown-item  js-change-access">Course Access  </a> </li>
+											<li><a asp-action="Details" asp-controller="Course" asp-route-Id="@course.CourseId" class="dropdown-item">Course Details </a> </li>
+											<li><a href="javascript:;" data-url="/Section/GetCourseSections/@course.CourseId?courseName=@course.CourseName" class="dropdown-item  modal-render" data-title="@course.CourseName Sections">Course Sections  </a> </li>
 										</ul>
 									</div>
-
 								</td>
 							</tr>
 						}
@@ -132,7 +132,7 @@
 					}
 				});
 			});
-			
+
 			$('body').delegate('.modal-render', 'click', function () {
 			var btn = $(this);
 			var modal = $('#Modal');
@@ -142,10 +142,10 @@
 			$.get({
 				url: btn.data('url'),
 				success: function (form) {
+					console.log(form);
 					modal.find('.modal-body').html(form);
 					$.validator.unobtrusive.parse(modal);
 				}
-
 			})
 		})
 		});

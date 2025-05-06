@@ -17,6 +17,8 @@ namespace CleanArch.Infrastructure.UnitOfWork
 		public ICourseRepository courseRepository {  get; }
 		public ISectionRepository SectionRepository { get; }
 
+		public IVideoRepository VideoRepository {  get; }	
+
 		private IDbContextTransaction? objTrans = null;
 
 		public UnitOfWork(EducationPlatformDbContext context)
@@ -24,6 +26,7 @@ namespace CleanArch.Infrastructure.UnitOfWork
 			this.context = context;
 			courseRepository = new CourseRepository(context);
 			SectionRepository = new SectionRepository(context);	
+			VideoRepository = new VideoRepository(context);	
 		}
 		
 

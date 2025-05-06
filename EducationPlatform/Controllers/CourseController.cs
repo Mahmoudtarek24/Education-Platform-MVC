@@ -1,5 +1,6 @@
 ﻿using CleanArch.Application.DTO_s.CourseDto_s;
 using CleanArch.Application.Interfaces;
+using CleanArch.Application.Services;
 using CleanArch.Domain.Entity;
 using EducationPlatform.Filters;
 using EducationPlatform.ViewModel;
@@ -16,7 +17,7 @@ namespace EducationPlatform.Controllers
 		private readonly ICourseServices courseServices;
 		public CourseController(ICourseServices courseServices)
 		{
-			this.courseServices = courseServices;	
+			this.courseServices = courseServices;
 		}
 
 		public async Task<IActionResult> Index(CoursesViewModel model)
@@ -185,7 +186,6 @@ namespace EducationPlatform.Controllers
 			return View(viewModel);
 		}
 
-
-
+		
 	}
 }

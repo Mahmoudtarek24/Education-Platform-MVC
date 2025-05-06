@@ -9,7 +9,8 @@ namespace CleanArch.Domain.Interfaces
 	public interface IUnitOfWork 
 	{
 		ICourseRepository courseRepository { get; }
-		ISectionRepository SectionRepository { get; }	
+		ISectionRepository SectionRepository { get; }
+		IVideoRepository VideoRepository { get; }	
 		void CreateTransaction();
 		void Commit();
 		void RollBack();

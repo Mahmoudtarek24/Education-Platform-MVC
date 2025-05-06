@@ -1,0 +1,80 @@
+﻿@model EditVideoViewModel
+
+@{
+	ViewData["Title"] = $"Edit  {Model.VideoName}";
+}
+
+
+<div class="container-fluid mt-5">
+	<div class="card shadow-sm rounded-4 p-5 w-100">
+		<div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+			<h4 class="mb-0 fw-bold">Edit @Model.VideoName Video</h4>
+		</div>
+
+		<form asp-action="Edit" asp-controller="Video" enctype="multipart/form-data" method="post">
+			<input type="hidden" asp-for="VideoId" />
+			<input type="hidden" asp-for="SectionId" />
+			<input type="hidden" asp-for="CourseName" />
+			<input type="hidden" asp-for="SectionName" />
+
+			<!-- Video Preview -->
+			<div class="mb-3">
+				<label class="form-label fw-semibold">Current / Selected Video</label><br />
+				<video id="videoPreview" width="100%" height="auto" controls>
+					<source src="@Model.VideoFileUrl" type="video/mp4">
+					Your browser does not support the video tag.
+				</video>
+			</div>
+
+			<!-- Change Video -->
+			<div class="mb-3">
+				<label asp-for="VideoUpdateFile" class="form-label fw-semibold">Change Video (optional)</label>
+				<input asp-for="VideoUpdateFile" class="form-control" type="file" accept="video/*" onchange="previewVideo(this)" />
+			</div>
+
+			<!-- Video Name -->
+			<div class="mb-3">
+				<label asp-for="VideoName" class="form-label fw-semibold">Video Name</label>
+				<input asp-for="VideoName" class="form-control" />
+				<span asp-validation-for="VideoName" class="text-danger"></span>
+
+			</div>
+
+			<!-- Video Order -->
+			<div class="row mb-3">
+				<div class="col-md-3">
+					<label asp-for="VideoOrder" class="form-label fw-semibold">Display Order</label>
+					<input asp-for="VideoOrder" class="form-control" type="number" min="1" />
+					<span asp-validation-for="VideoOrder" class="text-danger"></span>
+
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-end gap-4 mt-4">
+				<a asp-action="Index" asp-controller="Section" class="btn btn-secondary" asp-route-Id="@Model.SectionId"
+				   asp-route-courseName="@Model.CourseName" asp-route-sctionName="@Model.SectionName">Cancel</a>
+
+				<button type="submit" class="btn btn-primary"    >Update Video</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+@section Scripts{
+
+	<script>
+		function previewVideo(input) {
+			if (input.files && input.files[0]) {
+				const video = document.getElementById('videoPreview');
+				const file = input.files[0];
+				const url = URL.createObjectURL(file);
+
+				video.src = url;
+				video.load();
+				video.play();
+			}
+		}
+	</script>
+	@await Html.PartialAsync("_ValidationScriptsPartial")
+
+}

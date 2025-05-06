@@ -1,5 +1,6 @@
 ﻿using CleanArch.Application.Interfaces;
 using CleanArch.Application.Services;
+using CleanArch.Application.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,7 +18,10 @@ namespace CleanArch.Application
 			services.AddScoped<ICourseServices,CourseServices>();
 			services.AddScoped<ISectionServices,SectionServices>();
 			services.AddScoped<IImageServices, ImageServices>();
-			
+			services.Configure<SupabaseSettings>(configuration.GetSection("supabaseSettings"));
+			services.AddScoped<IStorageService, StorageServices>();
+			services.AddScoped<IVideoServices, VideoServices>();
+
 			return services;
 		}
 	}

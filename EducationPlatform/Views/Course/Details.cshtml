@@ -145,8 +145,7 @@
 
 		$(document).ready(function () {
 
-
-               $('body').delegate('.js-toggle-status', 'click', function () {
+              $('body').delegate('.js-toggle-status', 'click', function () {
             var btn = $(this);
             $.post(
                 btn.data('url'),
@@ -168,7 +167,6 @@
 			modal.modal('show');
 			modal.find('.modal-title').text(btn.data('title'));
 
-			console.log(btn.data('url'));
 			$.get({
 				url: btn.data('url'),
 				success: function (form) {

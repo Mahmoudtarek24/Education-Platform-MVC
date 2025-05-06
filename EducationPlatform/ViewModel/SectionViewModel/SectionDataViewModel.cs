@@ -4,7 +4,7 @@ namespace EducationPlatform.ViewModel.SectionViewModel
 {
 	public class SectionDataViewModel
 	{
-		public int SectionId { get; set; }
+		public int? SectionId { get; set; }
 		[Display(Name = "Section Name")]
 		public string SectionName { get; set; }
 		[Display(Name = "Section Order")]

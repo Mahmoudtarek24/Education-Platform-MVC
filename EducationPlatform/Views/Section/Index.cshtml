@@ -1,0 +1,150 @@
+﻿@model SectionDetailsViewModel
+
+@{
+	ViewData["Title"] = Model.SectionName;
+}
+<div class="container-fluid mt-5">
+	<div class="card shadow-sm rounded-4 p-5 w-100">
+		<!-- Header with Title, Center Text, and Add Button -->
+		<div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+			<h4 class="mb-0 fw-bold">@Model.CourseNmae – @Model.SectionName</h4>
+
+			<a asp-action="Create"
+			   asp-controller="Video"
+			   asp-route-Id="@Model.SectionId"
+			   asp-route-courseName="@Model.CourseNmae"
+			   asp-route-sectionName="@Model.SectionName"
+			   class="btn btn-primary">
+				+ Add Video
+			</a>
+		</div>
+
+		<div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center">
+			<h5 class="mb-0 fw-semibold text-dark">Number Of Video: @Model.videoDetailsViewModels.Count()</h5>
+
+			<!-- Right side: Labeled section duration -->
+			<span class="mb-0 fw-semibold text-dark">
+				Section Duration: @Model.SectionDuration.ToString(@"hh\:mm\:ss")
+			</span>
+		</div>
+		<!-- Show alert if no videos -->
+		@if (!Model.videoDetailsViewModels.Any())
+		{
+			<div class="alert alert-warning d-flex align-items-center p-5 mb-10">
+				<div class="d-flex flex-column">
+					<h4 class="mb-1 alert-heading">⚠️ No Videos Available</h4>
+					<span>There are currently no videos added to this section. Please check back later or click <strong>“+ Add Video”</strong> to upload.</span>
+				</div>
+			</div>
+		}
+		else
+		{
+			<div class="table-responsive">
+				<table class="table align-middle">
+					<thead class="text-muted border-bottom">
+						<tr>
+							<th class="ps-4">Video Name</th>
+							<th class="ps-4">Duration</th>
+							<th class="ps-4">Order On Watch</th>
+							<th class="ps-4">Is Free For Watch</th>
+							<th class="ps-4">Create On</th>
+							<th class="ps-4">Last Up On</th>
+							<th class="text-end">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var video in Model.videoDetailsViewModels.OrderBy(e => e.VideoOrder))
+						{
+							<tr style="height: 120px;">
+								<td class="align-middle ps-4">
+									<a href="@video.VideoFileUrl">@video.VideoName</a>
+								</td>
+								<td class="align-middle ps-4">
+									<strong>@video.VideoDuration.ToString(@"hh\:mm\:ss")</strong>
+								</td>
+								<td class="align-middle ps-4">
+									<strong>@video.VideoOrder</strong>
+								</td>
+								<td class="align-middle ps-4">
+									<span class="badge badge-@(video.IsFree ? "success" : "danger") js-toggle-access">
+										@(video.IsFree ? "Free" : "Closed")
+									</span>
+								</td>
+								<td class="align-middle ps-4">
+									@video.CreateOn.ToString("yyyy-MM-dd")
+								</td>
+								<td class="align-middle ps-4 js-update-on">
+									@(video.LastUpdateOn.HasValue ? video.LastUpdateOn.Value.ToString("yyyy-MM-dd") : "N/A")
+								</td>
+								<td class="align-middle ps-4">
+									<div class="dropdown text-end">
+										<button class="btn btn-active-light-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="true">
+											<i class="bi bi-menu-down"></i>
+										</button>
+										<ul class="dropdown-menu">
+											<li><a href="javascript:;" data-url="/Video/Delete/@video.VideoId" class="dropdown-item  js-toggle-status">Delete Video </a> </li>
+											<li><a href="javascript:;" data-url="/Video/ChangePreviewVideo/@video.VideoId" class="dropdown-item  js-change-access">preview video  </a> </li>
+											<li><a asp-controller="Video" asp-action="Edit" asp-route-Id="@video.VideoId" class="dropdown-item "
+												   asp-route-SectionId="@Model.SectionId"
+												   asp-route-courseName="@Model.CourseNmae"
+												   asp-route-sectionName="@Model.SectionName">Update video   </a> </li>
+										</ul>
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</div>
+</div>
+@Html.AntiForgeryToken()
+@section Scripts {
+
+	<script>
+
+		$(document).ready(function () {
+			$('body').delegate('.js-toggle-status', 'click', function () {
+			var btn = $(this);
+			$.post(
+				btn.data('url'),
+				{
+					'__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+				},
+				function () {
+					// Remove the entire row from the table
+					btn.parents('tr').remove();
+				}
+			).fail(function () {
+				alert('Failed to delete the Video. Please try again.');
+			});
+		
+			});
+
+
+			$('body').on('click', '.js-change-access', function () {
+				var btn = $(this);
+				$.post({
+					url: btn.data('url'),
+					data: {
+						'__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+					},
+					success: function (LastUpDateOn) {
+						var status = btn.closest('tr').find('.js-toggle-access');
+						var currentText = status.text().trim();
+						var newText = currentText === 'Free' ? 'Closed' : 'Free';
+
+						status.text(newText)
+							.removeClass('badge-success badge-danger')
+							.addClass(newText === 'Free' ? 'badge-success' : 'badge-danger');
+							btn.parents('tr').find('.js-update-on').html(LastUpDateOn);
+					},
+					error: function () {
+						alert("Error while changing course access.");
+					}
+				});
+			});
+		});
+	</script>
+}
