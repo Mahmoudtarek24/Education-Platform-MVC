@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Profile Template";
+}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">@ViewData["Title"]</h1>
+
+    <!-- Profile Navbar -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="d-flex flex-wrap flex-sm-nowrap mb-3">
+                <!-- Profile Picture -->
+                <div class="mr-3 mb-4">
+                    <div class="symbol symbol-50px symbol-lg-60px symbol-fixed position-relative">
+                        <img src="/assets/images/avatar-blank.svg" alt="User Avatar" class="rounded-circle" style="width: 60px; height: 60px;">
+                        <div class="position-absolute translate-middle bottom-0 start-100 mb-1 bg-success rounded-circle border border-4 border-white h-20px w-20px"></div>
+                    </div>
+                </div>
+                <!-- Profile Info -->
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex align-items-center mb-2">
+                                <a href="#" class="text-gray-900 text-hover-primary h4 font-weight-bold me-1">[USER EMAIL]</a>
+                            </div>
+                            <div class="d-flex flex-wrap font-weight-bold text-muted mb-4">
+                                <a href="#" class="d-flex align-items-center text-gray-600 text-hover-primary mb-2">
+                                    <i class="fas fa-envelope mr-2"></i>
+                                    [USER EMAIL]
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Details -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Profile Details</h6>
+        </div>
+        <div class="card-body">
+            <form class="form" method="post" enctype="multipart/form-data">
+                <!-- Avatar -->
+                <div class="form-group row mb-4">
+                    <label class="col-lg-4 col-form-label font-weight-bold text-gray-800">Avatar</label>
+                    <div class="col-lg-8">
+                        <div class="image-input image-input-outline" data-kt-image-input="true">
+                            <div class="image-input-wrapper" style="width: 125px; height: 125px; background-image: url('/assets/images/avatar-blank.svg'); background-size: cover;"></div>
+                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
+                                <i class="fas fa-pencil-alt text-primary"></i>
+                                <input type="file" accept=".png, .jpg, .jpeg">
+                                <input type="hidden" name="avatar_remove">
+                            </label>
+                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                                <i class="fas fa-times text-danger"></i>
+                            </span>
+                            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
+                                <i class="fas fa-times text-danger"></i>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted">Allowed file types: png, jpg, jpeg.</small>
+                    </div>
+                </div>
+                <!-- Full Name -->
+                <div class="form-group row mb-4">
+                    <label class="col-lg-4 col-form-label font-weight-bold text-gray-800">Full Name <span class="text-danger">*</span></label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control form-control-lg" placeholder="Full name" value="[FULL NAME]">
+                    </div>
+                </div>
+                <!-- Phone Number -->
+                <div class="form-group row mb-4">
+                    <label class="col-lg-4 col-form-label font-weight-bold text-gray-800">Phone Number <span class="text-danger">*</span></label>
+                    <div class="col-lg-8">
+                        <input type="tel" class="form-control form-control-lg" placeholder="Phone number" value="[PHONE NUMBER]">
+                    </div>
+                </div>
+                <!-- Actions -->
+                <div class="d-flex justify-content-end pt-3">
+                    <button type="reset" class="btn btn-light btn-active-light-primary mr-2">Discard</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="indicator-label">Save Changes</span>
+                        <span class="indicator-progress">Please wait... <span class="spinner-border spinner-border-sm align-middle ml-2"></span></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sign-in Method -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Sign-in Method</h6>
+        </div>
+        <div class="card-body">
+            <!-- Email Address -->
+            <div class="d-flex flex-wrap align-items-center mb-4">
+                <div>
+                    <div class="font-weight-bold text-gray-800 mb-1">Email Address</div>
+                    <div class="text-gray-600">[USER EMAIL]</div>
+                </div>
+                <div class="ml-auto">
+                    <a href="#" class="btn btn-light btn-active-light-primary">Change Email</a>
+                </div>
+            </div>
+            <hr class="my-4">
+            <!-- Password -->
+            <div class="d-flex flex-wrap align-items-center">
+                <div>
+                    <div class="font-weight-bold text-gray-800 mb-1">Password</div>
+                    <div class="text-gray-600">[PASSWORD PLACEHOLDER]</div>
+                </div>
+                <div class="ml-auto">
+                    <a href="#" class="btn btn-light btn-active-light-primary">Change Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- End Page Content -->

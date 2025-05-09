@@ -1,5 +1,7 @@
-﻿using CleanArch.Domain.Interfaces;
+﻿using CleanArch.Application.Interfaces;
+using CleanArch.Domain.Interfaces;
 using CleanArch.Infrastructure.Context;
+using CleanArch.Infrastructure.Email;
 using CleanArch.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +24,8 @@ namespace CleanArch.Infrastructure
 			});
 
 			services.AddScoped<IUnitOfWork,UnitOfWork.UnitOfWork>();
-
+			services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
+			services.AddTransient<IEmailSender, EmailSender>();
 			return services;
 		}
 	}

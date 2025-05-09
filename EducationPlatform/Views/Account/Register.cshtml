@@ -1,0 +1,132 @@
+﻿@model RegisterViewModel
+<div class="container">
+    <!-- Header Section -->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-light py-3">
+            <div class="container">
+                <!-- Navbar Brand -->
+                <a href="#" class="navbar-brand">
+                    <img src="https://bootstrapious.com/i/snippets/sn-registeration/logo.svg" alt="logo" width="150">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Section -->
+    <div class="row py-5 mt-4 align-items-center">
+        <!-- Image illustration (moved outside the form) -->
+        <div class="col-md-5 pe-lg-5 mb-5 mb-md-0">
+            <img src="https://bootstrapious.com/i/snippets/sn-registeration/illustration.svg" alt="Illustration" class="img-fluid mb-3 d-none d-md-block">
+
+            <!-- Title and Description -->
+            <h1>Create an Account</h1>
+            <p class="font-italic text-muted mb-0">Create a minimal registration page using Bootstrap 5 HTML form elements.</p>
+            <p class="font-italic text-muted">
+                Snippet By <a href="https://bootstrapious.com" class="text-muted"><u>Bootstrapious</u></a>
+            </p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="col-md-7 col-lg-6 ms-auto">
+            <form asp-action="Register" asp-controller="Account" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                <div class="row g-3">
+
+                    <!-- First Name -->
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white px-4 border-md border-end-0">
+                                <i class="fa fa-user text-muted"></i>
+                            </span>
+                            <input asp-for="FirstName" class="form-control bg-white border-start-0 border-md" placeholder="First Name" />
+                        </div>
+                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white px-4 border-md border-end-0">
+                                <i class="fa fa-user text-muted"></i>
+                            </span>
+                            <input asp-for="LastName" class="form-control bg-white border-start-0 border-md" placeholder="Last Name" />
+                        </div>
+                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- User Name -->
+                    <div class="col-12">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white px-4 border-md border-end-0">
+                                <i class="fa fa-user-circle text-muted"></i>
+                            </span>
+                            <input asp-for="UserName" class="form-control bg-white border-start-0 border-md" placeholder="User Name" />
+                        </div>
+                        <span asp-validation-for="UserName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-12">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white px-4 border-md border-end-0">
+                                <i class="fa fa-envelope text-muted"></i>
+                            </span>
+                            <input asp-for="Email" class="form-control bg-white border-start-0 border-md" placeholder="Email Address" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="col-12">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white px-4 border-md border-end-0">
+                                <i class="fa fa-calendar text-muted"></i>
+                            </span>
+                            <input asp-for="DateOfBirth" type="date" class="form-control bg-white border-start-0 border-md" />
+                        </div>
+                        <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white px-4 border-md border-end-0">
+                                <i class="fa fa-lock text-muted"></i>
+                            </span>
+                            <input asp-for="Password" type="password" class="form-control bg-white border-start-0 border-md" placeholder="Password" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white px-4 border-md border-end-0">
+                                <i class="fa fa-lock text-muted"></i>
+                            </span>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control bg-white border-start-0 border-md" placeholder="Confirm Password" />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <span class="fw-bold">Create your account</span>
+                        </button>
+                    </div>
+
+                    
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* 
+@section Scripts {
+
+    @await Html.PartialAsync("_ValidationScriptsPartial");
+}
+ *@

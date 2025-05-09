@@ -19,11 +19,11 @@ namespace CleanArch.Application.Services
 		}
 		public async Task<ConfirmationResponseDTO> AddVideoAsync(VideoDto CreateVideoDto)
 		{
-			ConfirmationResponseDTO response = null; 
+			ConfirmationResponseDTO response = null;
 			if (CreateVideoDto is null)
 				return response;
 
-			response= new ConfirmationResponseDTO();
+			response = new ConfirmationResponseDTO();
 			var section = unitOfWork.SectionRepository.IsDeletedSection(CreateVideoDto.SectionId);
 			if (section is null)
 			{
@@ -41,7 +41,7 @@ namespace CleanArch.Application.Services
 				{
 					await CreateVideoDto.Video.CopyToAsync(stream);
 				}
-			
+
 				FFmpeg.SetExecutablesPath(@"C:\Tools\ffmpeg-7.1.1-essentials_build\bin");
 				var mediaInfo = await FFmpeg.GetMediaInfo(tempPath);
 				durationInMinutes = mediaInfo.Duration.TotalMinutes;
@@ -71,10 +71,10 @@ namespace CleanArch.Application.Services
 					SectionId = CreateVideoDto.SectionId,
 					VideoName = CreateVideoDto.VideoName,
 					VideoOrder = CreateVideoDto.Order,
-					IsFree = CreateVideoDto.IsFree,		
+					IsFree = CreateVideoDto.IsFree,
 					VideoDuration = TimeSpan.FromMinutes(durationInMinutes),
 					VideoFileUrl = videoUrl,
-					CreateOn=DateTime.Now,	
+					CreateOn = DateTime.Now,
 				};
 
 				await unitOfWork.VideoRepository.AddAsync(video);
@@ -93,30 +93,30 @@ namespace CleanArch.Application.Services
 
 		public async Task<List<byte>> OrderVideoNumberAsync(int sectionId)
 		{
-			return await unitOfWork.VideoRepository.OrderVideoNumber(sectionId);	
+			return await unitOfWork.VideoRepository.OrderVideoNumber(sectionId);
 		}
 
 		public async Task<bool> ValidVideoNameAsync(int sectionId, string Name)
 		{
-			return await unitOfWork.VideoRepository.ValidVideoName(sectionId, Name);		
+			return await unitOfWork.VideoRepository.ValidVideoName(sectionId, Name);
 		}
 
 		public async Task<ConfirmationResponseDTO> DeleteVideoAsync(int VideoId)
 		{
 			ConfirmationResponseDTO responseDTO = new ConfirmationResponseDTO();
-			var video=await unitOfWork.VideoRepository.GetByIdEntity(VideoId);
+			var video = await unitOfWork.VideoRepository.GetByIdEntity(VideoId);
 
 			string VideoUrl = video.VideoFileUrl;
 			try
 			{
 				unitOfWork.CreateTransaction();
-			    unitOfWork.VideoRepository.Delete(video);
+				unitOfWork.VideoRepository.Delete(video);
 
 				await unitOfWork.Save();
 				unitOfWork.Commit();
 
 				var result = await storageService.DeleteFromSupabaseAsync(VideoUrl);
-				responseDTO.IsSuccessed= true;	
+				responseDTO.IsSuccessed = true;
 
 				return responseDTO;
 			}
@@ -124,7 +124,7 @@ namespace CleanArch.Application.Services
 			{
 				unitOfWork.RollBack();
 				responseDTO.IsSuccessed = false;
-				return responseDTO;	
+				return responseDTO;
 			}
 
 		}
@@ -137,7 +137,7 @@ namespace CleanArch.Application.Services
 
 			try
 			{
-				unitOfWork.CreateTransaction();	
+				unitOfWork.CreateTransaction();
 
 				video.LastUpdateOn = DateTime.Now;
 				video.IsFree = !video.IsFree;
@@ -145,10 +145,10 @@ namespace CleanArch.Application.Services
 				await unitOfWork.Save();
 				unitOfWork.Commit();
 
-				videoRespond.LastUpdatOn =video.LastUpdateOn;	
-				videoRespond.IsSuccessed=true;	
+				videoRespond.LastUpdatOn = video.LastUpdateOn;
+				videoRespond.IsSuccessed = true;
 
-				return videoRespond;	
+				return videoRespond;
 			}
 			catch
 			{
@@ -164,14 +164,98 @@ namespace CleanArch.Application.Services
 
 			VideoDetailsRespond videoDetails = new VideoDetailsRespond()
 			{
-				VideoId = VideoId,	
-				VideoFileUrl=video.VideoFileUrl,
-				VideoName=video.VideoName,	
-				VideoOrder=video.VideoOrder,	
-			};	
+				VideoId = VideoId,
+				VideoFileUrl = video.VideoFileUrl,
+				VideoName = video.VideoName,
+				VideoOrder = video.VideoOrder,
+			};
 
-			return videoDetails;	
+			return videoDetails;
+		}
+
+		public async Task<ConfirmationResponseDTO> UPdateVideoAsync(EditVideoDto editVideoDto)
+		{
+			ConfirmationResponseDTO response = new ConfirmationResponseDTO();
+			var video = await unitOfWork.VideoRepository.GetByIdEntity(editVideoDto.VideoId);
+
+			if (editVideoDto.VideoUpdateFile is not null)
+			{
+				await storageService.DeleteFromSupabaseAsync(video.VideoFileUrl);
+
+
+				var tempFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(editVideoDto.VideoUpdateFile.FileName)}";
+				var tempPath = Path.Combine(Path.GetTempPath(), tempFileName);
+
+				var durationInMinutes = default(double);
+
+				try
+				{
+					using (var stream = new FileStream(tempPath, FileMode.Create))
+					{
+						await editVideoDto.VideoUpdateFile.CopyToAsync(stream);
+					}
+
+					FFmpeg.SetExecutablesPath(@"C:\Tools\ffmpeg-7.1.1-essentials_build\bin");
+					var mediaInfo = await FFmpeg.GetMediaInfo(tempPath);
+					durationInMinutes = mediaInfo.Duration.TotalMinutes;
+
+					if (durationInMinutes > 30)
+					{
+						response.Message = "Video is too long. Maximum allowed duration is 30 minutes.";
+						return response;
+					}
+				}
+				catch
+				{
+					if (System.IO.File.Exists(tempPath))
+					{
+						System.IO.File.Delete(tempPath);
+					}
+					response.Message = "Error occurred during video processing";
+					return response;
+				}
+
+				try
+				{
+					var videoUrl = await storageService.UploadToSupabaseAsync(editVideoDto.VideoUpdateFile);
+
+					unitOfWork.CreateTransaction();
+
+					video.VideoFileUrl = videoUrl;
+					video.VideoDuration = TimeSpan.FromMinutes(durationInMinutes);
+					video.VideoName = editVideoDto.VideoName;
+					video.VideoOrder = editVideoDto.VideoOrder;
+					video.LastUpdateOn = DateTime.Now;
+
+					await unitOfWork.Save();
+					unitOfWork.Commit();
+					response.IsSuccessed = true;
+					return response;
+				}
+				catch
+				{
+					unitOfWork.RollBack();
+					return response;
+				}
+			}
+			else
+			{
+				try
+				{
+					unitOfWork.CreateTransaction();
+					video.VideoName = editVideoDto.VideoName;
+					video.VideoOrder = editVideoDto.VideoOrder;
+					await unitOfWork.Save();
+					unitOfWork.Commit();
+					response.IsSuccessed = true;	
+					return response;
+				}
+				catch
+				{
+					unitOfWork.RollBack();
+					return response;
+				}
+			}
 		}
 	}
 }
-

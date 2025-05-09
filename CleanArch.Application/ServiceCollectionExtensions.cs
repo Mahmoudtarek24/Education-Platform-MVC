@@ -21,7 +21,9 @@ namespace CleanArch.Application
 			services.Configure<SupabaseSettings>(configuration.GetSection("supabaseSettings"));
 			services.AddScoped<IStorageService, StorageServices>();
 			services.AddScoped<IVideoServices, VideoServices>();
-
+			services.AddScoped<IAccountService, AccountService>();
+			services.AddScoped<IUserUtilityService, UserUtilityService>();
+			services.AddHttpContextAccessor();
 			return services;
 		}
 	}

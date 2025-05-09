@@ -16,7 +16,9 @@ namespace CleanArch.Application.Interfaces
 
 		Task<ChangePreviewVideoRespond> ChangePreviewVideoAsync(int VideoId);
 
-		Task<VideoDetailsRespond> GetVideoByIdAsync(int VideoId);	
+		Task<VideoDetailsRespond> GetVideoByIdAsync(int VideoId);
+
+		Task<ConfirmationResponseDTO> UPdateVideoAsync(EditVideoDto editVideoDto);
 
 		Task<List<byte>> OrderVideoNumberAsync(int sectionId);
 		Task<bool> ValidVideoNameAsync(int sectionId, string Name);

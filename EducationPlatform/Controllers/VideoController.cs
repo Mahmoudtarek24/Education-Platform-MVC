@@ -140,11 +140,12 @@ namespace EducationPlatform.Controllers
 			};
 
 
-			//var UpdateResult=await 
+			var updateResult=await videoServices.UPdateVideoAsync(editVideoDto);	
 
-			// create esrvices,interface for Update vide and pass  EditVideoDto to it , view work okay
+			if(!updateResult.IsSuccessed)
+				return BadRequest();	
 
-			return Ok();
+			return RedirectToAction("Index", "Section", new { Id =model.SectionId, courseName =model.CourseName, sctionName =model.SectionName});	
 		}
 
 	}

@@ -16,7 +16,7 @@ namespace EducationPlatform.ViewModel.VideoViewModel
 		[Remote(action: "IsOrderVideoNumberTaken", controller: "RemoteValidation", AdditionalFields = "SectionId")]
 		public byte VideoOrder { get; set; }
 
-		public string VideoFileUrl { get; set; }
+		public string? VideoFileUrl { get; set; }
 		public IFormFile? VideoUpdateFile { get; set; } 
 
 		public int SectionId { get; set; }		

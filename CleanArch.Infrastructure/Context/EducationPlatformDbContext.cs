@@ -21,6 +21,7 @@ namespace CleanArch.Infrastructure.Context
 			base.OnModelCreating(builder);
 		}
 
+		public DbSet<ApplicationUser> applicationUsers { get; set; }	
 		public DbSet<Course> Course { get; set; }	
 		public DbSet<Section> Sections { get; set; }
 		public DbSet<Video> Videos { get; set; }	

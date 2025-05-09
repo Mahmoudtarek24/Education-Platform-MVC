@@ -146,11 +146,6 @@ namespace CleanArch.Application.Services
 				return false;
 			}
 		}
-
-
-
-		
-
 		public IEnumerable<SelectListItem> GetCourseStatus()
 		{
 			return Enum.GetValues(typeof(CourseStatus)).Cast<CourseStatus>()
